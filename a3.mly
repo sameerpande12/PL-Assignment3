@@ -95,4 +95,10 @@ tuple_list:
 
 paren_expression:
   LP or_expression RP { InParen($2)}
+  | constant {$1}
+;
+constant:
+ID {Var($1)}
+| INT {N($1)}
+| BOOL {B($1)}
 ;
