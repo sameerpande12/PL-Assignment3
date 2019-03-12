@@ -1,0 +1,64 @@
+{
+  open A3
+  exception Not_implemented
+}
+
+let plus =  '+'
+let minus = '-'
+let mult =  '*'
+let unaryminus = '~'
+let abs =   "abs"
+let div =   "div"
+let mod =   "mod"
+
+let open_paren = '('
+let closing_paren = ')'
+
+
+let bool_true = 'T'
+let bool_false = 'F'
+let bool_not = "not"
+let bool_and = "/\\"
+let bool_or = "\\/"
+
+let eq = '='
+let gt = '>'
+let lt = '<'
+
+let if_cond = "if"
+let then_cond = "then"
+let else_cond = "else"
+let fi_cond = "fi"
+
+let identifier = ['A'-'Z'] ['a'-'z' 'A'-'Z' '0'-'9' '_' '\'' ]*
+
+let comma = ','
+let proj = "proj"
+
+rule read = parse
+   eof                { EOF }
+   | ['0'-'9']+ as n  { INT (int_of_string n) }
+   | plus              { PLUS }
+   | minus             {MINUS}
+   | mult              { TIMES }
+   | div               {DIV}
+   | mod               {REM}
+   | bool_and          {CONJ}
+   | bool_or           {DISJ}
+   | eq                {EQ}
+   | gt                {GT}
+   | lt                {LT}
+   | open_paren        {LP}
+   | closing_paren     {RP}
+   | if_cond           {IF}
+   | then_cond         {THEN}
+   | else_cond         {ELSE}
+   | fi_cond           {FI}
+   | comma             {COMMA}
+   | proj              {PROJ}
+   | bool_true        {BOOL(true)}
+   | bool_false       {BOOL(false)}
+   | abs              {ABS}
+   | unaryminus       {TILDA}
+   | bool_not              {NOT}
+   | _                { raise Not_implemented }
