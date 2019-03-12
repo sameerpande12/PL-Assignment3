@@ -40,9 +40,11 @@ let binding rho s = toAnswer (rho s);;
 let parser s rho =
   let result = A3.main A2.read (Lexing.from_string s) in
     (* Return the three versions as abstract syntax tree, value, compiled opcode*)
-    (result, (A1.eval result rho), (A1.stackmc [] (binding rho) (A1.compile result)))
+  (* (result, (A1.eval result rho), (A1.stackmc [] (binding rho) (A1.compile result))) *)
+     (result, (A1.eval result rho));
 ;;
 
+let parse x = parser x rho;;
 (* Input is given as string and output is a value *)
 let rho s = match s with
    "X" -> NumVal 5

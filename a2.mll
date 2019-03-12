@@ -1,6 +1,6 @@
 {
   open A3
-  exception Not_implemented
+  exception Parsing_Error
 }
 
 let plus =  '+'
@@ -31,7 +31,7 @@ let else_cond = "else"
 let fi_cond = "fi"
 
 let identifier = ['A'-'Z'] ['a'-'z' 'A'-'Z' '0'-'9' '_' '\'' ]*
-
+let whitespace = [' ' '\t' '\n' '\r']+
 let comma = ','
 let proj = "proj"
 
@@ -56,9 +56,11 @@ rule read = parse
    | fi_cond           {FI}
    | comma             {COMMA}
    | proj              {PROJ}
+   | identifier  as id       {ID(id)}
    | bool_true        {BOOL(true)}
    | bool_false       {BOOL(false)}
    | abs              {ABS}
    | unaryminus       {TILDA}
-   | bool_not              {NOT}
-   | _                { raise Not_implemented }
+   | bool_not         {NOT}
+   | whitespace       {read lexbuf}
+   | _                { raise Parsing_Error }
