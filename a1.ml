@@ -175,13 +175,13 @@ let rec eval ex rho = match ex with
   |Project( (i,n) ,e) ->
     (match e with
        Tuple(x,elist)->
-       if(x = n) then eval (List.nth elist i) rho
+       if(x = n) then eval (List.nth elist (i-1)) rho
        else raise Invalid_Parameter
      (*|_ -> raise Invalid_Expression_Type*)
     )
 
 let rec stackmc stk rho pgm = match pgm with
-  | (NCONST(n)::l) ->  stackmc ((Num n)::stk) rho l
+  | ( (NCONST(n))::l) ->  stackmc ((Num n)::stk) rho l
   | ( BCONST(b)::l) ->  stackmc ((Bool b)::stk) rho l
   | ( VAR(x)::l) -> stackmc ((rho x)::stk) rho l
   | (ABS::l)->
@@ -291,7 +291,7 @@ let rec stackmc stk rho pgm = match pgm with
       | (s::[])-> raise EmptyStackException
       | (s::s1::[])-> raise EmptyStackException
       | ( (Bool (s1))::s2::s3::s4)-> stackmc ((if(s1)then s2 else s3)::s4) rho l
-      (*| _ -> raise Invalid_Expression_Type*)
+      | _ -> raise Invalid_Parameter
     )
   | (TUPLE(n)::l)-> stackmc ((Tup(n, getfirstn n stk))::(removefirstn n stk)) rho  l
   | ((PROJ(i,n))::l) -> stackmc  ((List.nth stk i)::(removefirstn n stk)) rho l
@@ -300,7 +300,8 @@ let rec stackmc stk rho pgm = match pgm with
 let rec compile ex = match ex with
 
     B(b) -> [ BCONST(b) ]
-  | N(n) -> [ NCONST(mk_big n)]
+  | N(n) ->
+            [ NCONST(mk_big n)]
   | Var(x) -> [VAR(x)]
 
   |Abs(e) -> compile(e)@[ABS]

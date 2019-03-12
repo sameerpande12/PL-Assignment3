@@ -56,9 +56,9 @@ rule read = parse
    | fi_cond           {FI}
    | comma             {COMMA}
    | proj              {PROJ}
-   | identifier  as id       {ID(id)}
    | bool_true        {BOOL(true)}
    | bool_false       {BOOL(false)}
+   | identifier  as id       {ID(id)}
    | abs              {ABS}
    | unaryminus       {TILDA}
    | bool_not         {NOT}
