@@ -39,9 +39,8 @@ let binding rho s = toAnswer (rho s);;
 let parser s rho =
   let result = A3.main A2.read (Lexing.from_string s) in
     (* Return the three versions as abstract syntax tree, value, compiled opcode*)
-  (* (result, (A1.eval result rho), (A1.stackmc [] (binding rho) (A1.compile result))) *)
-  (result,(A1.eval result rho),(A1.compile result), (A1.stackmc [] (binding rho) (A1.compile result)));
-;;
+   (result, (A1.eval result rho), (A1.stackmc [] (binding rho) (A1.compile result))) 
+
 
 
 (* Input is given as string and output is a value *)

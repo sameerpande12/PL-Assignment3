@@ -78,57 +78,57 @@ let rec eval ex rho = match ex with
   | Abs(e1)-> begin
       match eval e1 rho with
         NumVal(a) -> if a > 0 then NumVal(a) else NumVal(-a)
-      (*|_ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     end
   |Negative(e1)-> begin
       match eval e1 rho with
         NumVal(a) -> NumVal(- a)
-      (*|_ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     end
   |Not(e1) ->begin
       match (eval e1 rho) with
         (BoolVal(b1))-> BoolVal(not b1)
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     end
   |Conjunction(e1,e2) ->begin
       match (eval e1 rho,eval e2 rho) with
         (BoolVal(b1),BoolVal(b2))-> BoolVal(b1 && b2)
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     end
   |Disjunction(e1,e2)->begin
       match (eval e1 rho, eval e2 rho) with
         (BoolVal(b1),BoolVal(b2))-> BoolVal(b1 || b2)
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     end
 
   |Add(e1,e2)-> begin
       match(eval e1 rho,eval e2 rho)with
         (NumVal(a), NumVal(b))-> NumVal( a + b)
-      (*|_ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     end
   |Sub(e1,e2)-> begin
       match(eval e1 rho,eval e2 rho)with
         (NumVal(a), NumVal (b))-> NumVal( a - b)
-      (*|_ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     end
   |Mult(e1,e2)-> begin
       match(eval e1 rho,eval e2 rho)with
         (NumVal(a), NumVal(b))-> NumVal( a * b)
-      (*|_ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     end
   |Div(e1,e2)-> begin
       match(eval e1 rho,eval e2 rho)with
         (NumVal(a), NumVal (b))->
         if( b = 0)then raise DivisionByZero
         else NumVal( a/b)
-      (*|_ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     end
   |Rem(e1,e2)-> begin
       match(eval e1 rho,eval e2 rho)with
         (NumVal (a), NumVal (b))->
         if( b = 0)then raise DivisionByZero
         else NumVal( a mod  b)
-      (*|_ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     end
   |Equals(e1,e2)->
     if( (eval e1 rho) = (eval e2 rho)) then BoolVal(true)
@@ -137,25 +137,25 @@ let rec eval ex rho = match ex with
     begin
       match (eval e1 rho, eval e2 rho) with
         ( NumVal(a), NumVal(b)) -> BoolVal(  a>=b )
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     end
   |LessTE(e1,e2)->
     begin
       match (eval e1 rho, eval e2 rho) with
         ( NumVal (a), NumVal(b)) -> BoolVal( a <= b )
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     end
   |GreaterT(e1,e2)->
     begin
       match (eval e1 rho, eval e2 rho) with
         ( NumVal (a), NumVal(b)) -> BoolVal(  a > b )
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     end
   |LessT(e1,e2)->
     begin
       match (eval e1 rho, eval e2 rho) with
         ( NumVal (a), NumVal(b)) -> BoolVal(  a < b )
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     end
 
   | InParen(e)-> eval(e) rho
@@ -164,7 +164,7 @@ let rec eval ex rho = match ex with
         BoolVal(true) -> eval e1 rho
       | BoolVal(false) -> eval e2 rho
 
-      (*|_ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     )
 
   |Tuple(n,exp_list)->
@@ -177,10 +177,11 @@ let rec eval ex rho = match ex with
        Tuple(x,elist)->
        if(x = n) then eval (List.nth elist (i-1)) rho
        else raise Invalid_Parameter
-     (*|_ -> raise Invalid_Expression_Type*)
+     |_ -> raise Invalid_Expression_Type
     )
 
 let rec stackmc stk rho pgm = match pgm with
+   [] -> List.hd stk
   | ( (NCONST(n))::l) ->  stackmc ((Num n)::stk) rho l
   | ( BCONST(b)::l) ->  stackmc ((Bool b)::stk) rho l
   | ( VAR(x)::l) -> stackmc ((rho x)::stk) rho l
@@ -188,65 +189,65 @@ let rec stackmc stk rho pgm = match pgm with
     (match stk with
        [] -> raise EmptyStackException
      |( Num(s)::s1)-> stackmc ( (Num(abs s))::s1) rho l
-     (*|_ -> raise Invalid_Expression_Type*)
+     |_ -> raise Invalid_Expression_Type
     )
   | (UNARYMINUS::l)->
     (match stk with
        [] -> raise EmptyStackException
      |(Num(s)::s1)-> stackmc (Num(minus s)::s1) rho l
-     (*|_ -> raise Invalid_Expression_Type*)
+     |_ -> raise Invalid_Expression_Type
     )
   | (NOT::l)->(
       match stk with
         [] -> raise EmptyStackException
       |(Bool(b)::s1)-> stackmc ( (Bool(not b))::s1) rho l
-      (*|_ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     )
   |(PLUS::l)->( match stk with
         ([])-> raise EmptyStackException
       | ( Num(s)::[])-> raise EmptyStackException
       | ( (Num s1)::(Num s2)::s3)-> stackmc ((Num(add s1 s2))::s3) rho l
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     )
   |(MINUS::l)->( match stk with
         ([])-> raise EmptyStackException
       | (Num(s)::[])-> raise EmptyStackException
       | ( (Num s1)::(Num s2)::s3)-> stackmc ((Num(sub s1 s2))::s3) rho l
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     )
 
   |(MULT::l)->( match stk with
         ([])-> raise EmptyStackException
       | (Num(s)::[])-> raise EmptyStackException
       | ( (Num s1)::(Num s2)::s3)-> stackmc ((Num(mult s1 s2))::s3) rho l
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     )
 
   |(DIV::l)->( match stk with
         ([])-> raise EmptyStackException
       | (Num(s)::[])-> raise EmptyStackException
       | ( (Num s1)::(Num s2)::s3)-> stackmc ((Num(div s1 s2))::s3) rho l
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     )
 
   |(REM::l)->( match stk with
         ([])-> raise EmptyStackException
       | (Num(s)::[])-> raise EmptyStackException
       | ( (Num s1)::(Num s2)::s3)-> stackmc ((Num(rem s1 s2))::s3) rho l
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     )
 
   |(DISJ::l)->( match stk with
         ([])-> raise EmptyStackException
       | (Bool(s)::[])-> raise EmptyStackException
       | ( (Bool s1)::(Bool s2)::s3)-> stackmc ((Bool( s1 || s2))::s3) rho l
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     )
   |(CONJ::l)->( match stk with
         ([])-> raise EmptyStackException
       | (Bool(s)::[])-> raise EmptyStackException
       | ( (Bool s1)::(Bool s2)::s3)-> stackmc ((Bool( s1 && s2))::s3) rho l
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     )
 
   |(EQS::l)->( match stk with
@@ -254,35 +255,35 @@ let rec stackmc stk rho pgm = match pgm with
       | (s::[])-> raise EmptyStackException
       | ( (Bool s1)::(Bool s2)::s3)-> stackmc ((Bool( s1 = s2))::s3) rho l
       | ( (Num s1)::(Num s2)::s3)-> stackmc ((Bool( eq s1 s2))::s3) rho l
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     )
 
   |(GTE::l)->( match stk with
         ([])-> raise EmptyStackException
       | (s::[])-> raise EmptyStackException
       | ( (Num s1)::(Num s2)::s3)-> stackmc ((Bool( geq s1 s2))::s3) rho l
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     )
 
   |(LTE::l)->( match stk with
         ([])-> raise EmptyStackException
       | (s::[])-> raise EmptyStackException
       | ( (Num s1)::(Num s2)::s3)-> stackmc ((Bool( leq s1 s2))::s3) rho l
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     )
 
   |(GT::l)->( match stk with
         ([])-> raise EmptyStackException
       | (s::[])-> raise EmptyStackException
       | ( (Num s1)::(Num s2)::s3)-> stackmc ((Bool( gt s1 s2))::s3) rho l
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     )
 
   |(LT::l)->( match stk with
         ([])-> raise EmptyStackException
       | (s::[])-> raise EmptyStackException
       | ( (Num s1)::(Num s2)::s3)-> stackmc ((Bool( lt s1 s2))::s3) rho l
-      (*| _ -> raise Invalid_Expression_Type*)
+      |_ -> raise Invalid_Expression_Type
     )
 
   |(PAREN::l)-> stackmc stk rho l
