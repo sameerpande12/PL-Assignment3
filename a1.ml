@@ -9,12 +9,12 @@ exception Inconsistent_Tuple_Size
 exception Empty_List_Error
 exception Invalid_Parameter
 exception EmptyStackException
-exception ComputationError
-exception ComputationError1_g
-exception ComputationError2_g
+
+
+
 exception Negative_Paramter_Exception
-exception ComputationError1_r
-exception ComputationError2_r
+
+
 let rec getfirstn n l =
 
   match l with
