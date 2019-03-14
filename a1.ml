@@ -318,7 +318,7 @@ let rec compile ex = match ex with
   |Abs(e) -> compile(e)@[ABS]
   |Negative(e)-> compile(e)@[UNARYMINUS]
 
-  |Not(e) ->   BCONST(false)::BCONST(true)::(compile(e))@[IFTE]
+  |Not(e) ->   (compile(e))@[NOT]
 
   |Add(e1,e2) -> (compile(e2))@(compile(e1))@[PLUS]
   |Sub(e1,e2) ->(compile(e2))@(compile(e1))@[MINUS]

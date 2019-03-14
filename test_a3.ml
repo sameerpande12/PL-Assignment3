@@ -52,6 +52,7 @@ let rho s = match s with
     "TTrue\'_12\'" -> BoolVal false
 |   "X" -> NumVal 5
 |  "Y" -> BoolVal true
+|  "W" -> BoolVal false
 |  "Z" -> TupVal (3, [NumVal 5; BoolVal true; NumVal 1]);;
 
 let _ = (parser "5" rho);;
@@ -59,3 +60,6 @@ let _ = (parser "5" rho);;
 let p x = parser x rho;;
 
 p " ( proj(1,2)(1,2), T , X )";;
+
+p " ~ ( proj(4,5)(1,2,3,4,5))";;
+p "if not Y then X else Z fi";;
