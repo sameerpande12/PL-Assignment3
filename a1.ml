@@ -9,22 +9,25 @@ exception Inconsistent_Tuple_Size
 exception Empty_List_Error
 exception Invalid_Parameter
 exception EmptyStackException
-exception Match_Failure_Stackmc
-exception No_Match_Compile
-
+exception ComputationError
+exception ComputationError1_g
+exception ComputationError2_g
+exception Negative_Paramter_Exception
+exception ComputationError1_r
+exception ComputationError2_r
 let rec getfirstn n l =
   match l with
-    [] -> if( n<>0) then raise Invalid_Parameter else []
-  |(x::xs)-> if(n<0)then raise Invalid_Parameter
+    [] -> if( n<0) then raise Negative_Paramter_Exception else if (n>0) then raise EmptyStackException else []
+  |(x::xs)-> if(n<0)then raise Negative_Paramter_Exception
     else if(n=0)then []
     else x::(getfirstn (n-1) xs)
 
 let rec removefirstn n l =
   match l with
-    [] -> if( n<>0) then raise Invalid_Parameter else []
-  |(x::xs)-> if(n<0)then raise Invalid_Parameter
+    [] -> if( n<0) then raise Negative_Paramter_Exception else if (n>0) then raise EmptyStackException else []
+  |(x::xs)-> if(n<0)then raise Negative_Paramter_Exception
     else if(n=0)then l
-    else (getfirstn (n-1) xs)
+    else removefirstn (n-1) xs
 
 (* abstract syntax *)
 type  exptree =
@@ -295,8 +298,8 @@ let rec stackmc stk rho pgm = match pgm with
       | _ -> raise Invalid_Parameter
     )
   | (TUPLE(n)::l)-> stackmc ((Tup(n, getfirstn n stk))::(removefirstn n stk)) rho  l
-  | ((PROJ(i,n))::l) -> stackmc  ((List.nth stk i)::(removefirstn n stk)) rho l
-  | _ -> raise Match_Failure_Stackmc
+  | ((PROJ(i,n))::l) -> stackmc  ((List.nth stk (i-1))::(removefirstn n stk)) rho l
+
 
 let rec compile ex = match ex with
 
@@ -329,5 +332,4 @@ let rec compile ex = match ex with
   |Project((i,n),e)-> compile(e)@[PROJ(i,n)]
   |Tuple(n,elist)->
     let fn a b = (compile a) @ b in
-    List.fold_right fn (List.rev elist) []
-  | _ -> raise No_Match_Compile
+    (List.fold_right fn (List.rev elist) [])@[TUPLE(n)]

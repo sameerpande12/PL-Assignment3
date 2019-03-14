@@ -38,42 +38,28 @@ not_expression:
   | compare_expression {$1}
 
 compare_expression:
-  compare_expression EQ sub_expression { Equals($1,$3)}
-  | compare_expression LT sub_expression { LessT($1,$3)}
-  | compare_expression LT EQ sub_expression {LessTE($1,$4)}
-  | compare_expression GT sub_expression { GreaterT($1,$3)}
-  | compare_expression GT EQ sub_expression {GreaterTE($1,$4)}
-  | sub_expression {$1}
+  compare_expression EQ sum_expression { Equals($1,$3)}
+  | compare_expression LT sum_expression { LessT($1,$3)}
+  | compare_expression LT EQ sum_expression {LessTE($1,$4)}
+  | compare_expression GT sum_expression { GreaterT($1,$3)}
+  | compare_expression GT EQ sum_expression {GreaterTE($1,$4)}
+  | sum_expression {$1}
 ;
-sub_expression:
-  sub_expression MINUS add_expression { Sub($1,$3)}
-  | add_expression {$1}
+sum_expression:
+  sum_expression MINUS muldivrem_expression { Sub($1,$3)}
+  | sum_expression PLUS muldivrem_expression { Add($1,$3)}
+  | muldivrem_expression {$1}
 ;
-add_expression:
-  add_expression PLUS rem_expression {Add($1,$3)}
-  | rem_expression {$1}
-;
-rem_expression:
-  rem_expression REM mult_expression {Rem($1,$3)}
-  | mult_expression {$1}
-;
-mult_expression:
-  mult_expression TIMES div_expression {Mult($1,$3)}
-  | div_expression {$1}
-;
-div_expression:
-  div_expression DIV abs_expression {Div($1,$3)}
-  | abs_expression {$1}
-;
+muldivrem_expression:
+  muldivrem_expression REM abs_negative_expression {Rem($1,$3)}
+ | muldivrem_expression DIV abs_negative_expression {Div($1,$3)}
+ | muldivrem_expression TIMES abs_negative_expression {Mult($1,$3)}
+ | abs_negative_expression   {$1}
 
-abs_expression:
- ABS abs_expression {Abs($2)}
- | negative_expression {$1}
-;
-
-negative_expression:
-  TILDA negative_expression {Negative($2)}
-  | ifte_expression {$1}
+abs_negative_expression:
+ ABS abs_negative_expression {Abs($2)}
+ |TILDA abs_negative_expression {Negative($2)}
+ | ifte_expression {$1}
 ;
 ifte_expression:
   IF or_expression THEN or_expression ELSE or_expression FI {IfThenElse($2,$4,$6)}
