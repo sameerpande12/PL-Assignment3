@@ -67,7 +67,7 @@ ifte_expression:
 ;
 
 proj_expression:
- PROJ LP INT COMMA INT RP tuple_expression { Project(($3,$5),$7)}
+ PROJ LP INT COMMA INT RP proj_expression { Project(($3,$5),$7)}
  | tuple_expression {$1}
 ;
 tuple_expression:

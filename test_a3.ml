@@ -46,8 +46,7 @@ let compil s =
   let result = A3.main A2.read (Lexing.from_string s) in
   (A1.compile result)
 
-
-(* Input is given as string and output is a value *)
+  (* Input is given as string and output is a value *)
 let rho s = match s with
     "TTrue\'_12\'" -> BoolVal false
 |   "X" -> NumVal 5
@@ -63,3 +62,9 @@ p " ( proj(1,2)(1,2), T , X )";;
 
 p " ~ ( proj(4,5)(1,2,3,4,5))";;
 p "if not Y then X else Z fi";;
+
+
+let calc s =
+
+  let result = A3.main A2.read (Lexing.from_string s) in
+  (A1.eval result rho)

@@ -178,9 +178,9 @@ let rec eval ex rho = match ex with
       | e::e1list -> (eval e rho)::(eval_list e1list) in
     TupVal(n, eval_list exp_list)
   |Project( (i,n) ,e) ->
-    (match e with
-       Tuple(x,elist)->
-       if(x = n) then eval (List.nth elist (i-1)) rho
+    (match (eval e rho) with
+       TupVal(x,elist)->
+       if(x = n) then  (List.nth elist (i-1)) 
        else raise Invalid_Parameter
      |_ -> raise Invalid_Expression_Type
     )
