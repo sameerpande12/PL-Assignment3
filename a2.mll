@@ -35,9 +35,14 @@ let whitespace = [' ' '\t' '\n' '\r']+
 let comma = ','
 let proj = "proj"
 
+let digits = ['0'-'9']
+let nonzeroDigits = ['1'-'9']
+let integers =  ('0'|(nonzeroDigits digits*))
+
+
 rule read = parse
    eof                { EOF }
-   | ['0'-'9']+ as n  { INT (int_of_string n) }
+   | integers as n  { INT (int_of_string n) }
    | plus              { PLUS }
    | minus             {MINUS}
    | mult              { TIMES }
