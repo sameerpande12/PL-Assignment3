@@ -16,6 +16,7 @@ exception Negative_Paramter_Exception
 exception ComputationError1_r
 exception ComputationError2_r
 let rec getfirstn n l =
+
   match l with
     [] -> if( n<0) then raise Negative_Paramter_Exception else if (n>0) then raise EmptyStackException else []
   |(x::xs)-> if(n<0)then raise Negative_Paramter_Exception
@@ -23,8 +24,9 @@ let rec getfirstn n l =
     else x::(getfirstn (n-1) xs)
 
 let rec removefirstn n l =
+
   match l with
-    [] -> if( n<0) then raise Negative_Paramter_Exception else if (n>0) then raise EmptyStackException else []
+    [] ->  if( n<0) then raise Negative_Paramter_Exception else if (n>0) then raise EmptyStackException else []
   |(x::xs)-> if(n<0)then raise Negative_Paramter_Exception
     else if(n=0)then l
     else removefirstn (n-1) xs
@@ -297,9 +299,14 @@ let rec stackmc stk rho pgm = match pgm with
       | ( (Bool (s1))::s2::s3::s4)-> stackmc ((if(s1)then s2 else s3)::s4) rho l
       | _ -> raise Invalid_Parameter
     )
-  | (TUPLE(n)::l)-> stackmc ((Tup(n, getfirstn n stk))::(removefirstn n stk)) rho  l
-  | ((PROJ(i,n))::l) -> stackmc  ((List.nth stk (i-1))::(removefirstn n stk)) rho l
-
+  | (TUPLE(n)::l)->
+    stackmc ((Tup(n, getfirstn n stk))::(removefirstn n stk)) rho  l
+  | ((PROJ(i,n))::l) ->
+    (match stk with
+      (Tup(n,plist)::s) ->
+      stackmc  ((List.nth plist (i-1))::s)  rho l
+     | _ -> raise Invalid_Parameter
+    )
 
 let rec compile ex = match ex with
 

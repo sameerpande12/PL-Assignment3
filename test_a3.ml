@@ -42,7 +42,7 @@ let parser s rho =
   (result, (A1.eval result rho), (A1.stackmc [] (binding rho) (A1.compile result)))
   (*(A1.stackmc [] (binding rho) (A1.compile result));;*)
 
-let compil s rho =
+let compil s =
   let result = A3.main A2.read (Lexing.from_string s) in
   (A1.compile result)
 
